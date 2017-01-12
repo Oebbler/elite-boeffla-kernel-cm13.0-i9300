@@ -2379,10 +2379,10 @@ static struct platform_device *midas_devices[] __initdata = {
 /* below temperature base on the celcius degree */
 struct s5p_platform_tmu midas_tmu_data __initdata = {
 	.ts = {
-		.stop_1st_throttle  = 85,
-		.start_1st_throttle = 90,
-		.stop_2nd_throttle  = 95,
-		.start_2nd_throttle = 103,
+		.stop_1st_throttle  = 90,
+		.start_1st_throttle = 95,
+		.stop_2nd_throttle  = 100,
+		.start_2nd_throttle = 105,
 		.start_tripping	    = 110, /* temp to do tripping */
 		.start_emergency    = 120, /* To protect chip,forcely kernel panic */
 		.stop_mem_throttle  = 83,
@@ -2391,7 +2391,7 @@ struct s5p_platform_tmu midas_tmu_data __initdata = {
 		.start_tc = 10,
 	},
 	.cpufreq = {
-		.limit_1st_throttle  = 1200000, /* 1.200MHz in KHz order */
+		.limit_1st_throttle  = 1400000, /* 1.400MHz in KHz order */
 		.limit_2nd_throttle  = 200000, /* 200MHz in KHz order */
 	},
 	.temp_compensate = {

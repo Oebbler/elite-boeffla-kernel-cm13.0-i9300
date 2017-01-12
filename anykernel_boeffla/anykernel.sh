@@ -340,10 +340,12 @@ dump_boot;
 # AnyKernel permissions
 chmod 775 $ramdisk/sbin
 chmod 755 $ramdisk/sbin/busybox
+chmod 755 $ramdisk/sbin/uci
 
 chmod 775 $ramdisk/res
 chmod -R 755 $ramdisk/res/bc
 chmod -R 755 $ramdisk/res/misc
+chmod -R 755 $ramdisk/res/synapse
 
 # ramdisk changes
 backup_file default.prop;

@@ -10,9 +10,10 @@
 # Parameters to be configured manually
 #######################################
 
-BOEFFLA_VERSION="5.0-alpha1-CM13.0-i9300"
+BOEFFLA_VERSION="5.3.0.5-F2FS-CM13.0-i9300"
+BOEFFLA_DATE=20170108
 
-TOOLCHAIN="/opt/toolchains/arm-eabi-4.8/bin/arm-eabi-"
+TOOLCHAIN="/mnt/mount3/source/linux/toolchain/gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-"
 ARCHITECTURE=arm
 COMPILER_FLAGS_KERNEL="-mtune=cortex-a9 -fno-diagnostics-show-caret"
 COMPILER_FLAGS_MODULE="-mtune=cortex-a9 -fno-diagnostics-show-caret"
@@ -27,7 +28,7 @@ OUTPUT_FOLDER=""
 DEFCONFIG="boeffla_defconfig"
 DEFCONFIG_VARIANT=""
 
-KERNEL_NAME="Boeffla-Kernel"
+KERNEL_NAME="Elite-Boeffla-Kernel"
 
 FINISH_MAIL_TO=""
 
@@ -39,7 +40,7 @@ SMB_SHARE_BACKUP=""
 SMB_FOLDER_BACKUP=""
 SMB_AUTH_BACKUP=""
 
-NUM_CPUS=""   # number of cpu cores used for build (leave empty for auto detection)
+NUM_CPUS="8"   # number of cpu cores used for build (leave empty for auto detection)
 
 #######################################
 # automatic parameters, do not touch !
@@ -55,10 +56,13 @@ ROOT_PATH=$PWD
 ROOT_DIR_NAME=`basename "$PWD"`
 cd $SOURCE_PATH
 
-BUILD_PATH="$ROOT_PATH/build"
-REPACK_PATH="$ROOT_PATH/repack"
+## default values
+#BUILD_PATH="$ROOT_PATH/build"
+#REPACK_PATH="$ROOT_PATH/repack"
+WDIR="/home/user/tmpfs"
+BUILD_PATH="$WDIR/build"
+REPACK_PATH="$WDIR/repack"
 
-BOEFFLA_DATE=$(date +%Y%m%d)
 GIT_BRANCH=`git symbolic-ref --short HEAD`
 
 if [ -z "$NUM_CPUS" ]; then
@@ -100,7 +104,7 @@ step0_copy_code()
 
 	# Replace version information in mkcompile_h with the one from x-settings.sh
 	sed "s/\`echo \$LINUX_COMPILE_BY | \$UTS_TRUNCATE\`/$KERNEL_NAME-$BOEFFLA_VERSION-$BOEFFLA_DATE/g" -i $BUILD_PATH/scripts/mkcompile_h
-	sed "s/\`echo \$LINUX_COMPILE_HOST | \$UTS_TRUNCATE\`/andip71/g" -i $BUILD_PATH/scripts/mkcompile_h
+	sed "s/\`echo \$LINUX_COMPILE_HOST | \$UTS_TRUNCATE\`/Oebbler/g" -i $BUILD_PATH/scripts/mkcompile_h
 }
 
 step1_make_clean()
@@ -246,7 +250,7 @@ step4_prepare_anykernel()
 	cd $REPACK_PATH
 	KERNELNAME="Flashing $KERNEL_NAME $BOEFFLA_VERSION"
 	sed -i "s;###kernelname###;${KERNELNAME};" META-INF/com/google/android/update-binary;
-	COPYRIGHT="(c) Lord Boeffla (aka andip71), $(date +%Y.%m.%d-%H:%M:%S)"
+	COPYRIGHT="(c) Lord Boeffla (aka andip71) and Oebbler, $(date +%Y.%m.%d-%H:%M:%S)"
 	sed -i "s;###copyright###;${COPYRIGHT};" META-INF/com/google/android/update-binary;
 }
 
@@ -286,7 +290,7 @@ step7_analyse_log()
 	echo -e "\n***************************************************"
 	echo -e "Check for compile errors:"
 
-	cd $ROOT_PATH
+	cd $WDIR
 	echo -e $COLOR_RED
 	grep " error" compile.log
 	grep "forbidden warning" compile.log
@@ -355,8 +359,8 @@ stepR_rewrite_config()
 	make mrproper
 
 	# commit change
-	git add arch/$ARCHITECTURE/configs/$DEFCONFIG
-	git commit
+#	git add arch/$ARCHITECTURE/configs/$DEFCONFIG
+#	git commit
 }
 
 stepC_cleanup()
@@ -392,6 +396,14 @@ stepB_backup()
 	fi
 }
 
+stepW_wipe() {
+	echo -e $COLOR_GREEN"\nw - factory wipe\n"$COLOR_NEUTRAL
+	TIME1=$(date +%s)
+	rm -rf $BUILD_PATH $REPACK_PATH ../compile.log
+	TIME=$(( `date +%s` - $TIME1 ))
+	echo -e "Wipe completed in $TIME seconds"
+}
+
 display_help()
 {
 	echo
@@ -408,7 +420,7 @@ display_help()
 	echo "rel = all, execute steps 0-9 - without CCACHE  |  r = rewrite config"
 	echo "a   = all, execute steps 0-9                   |  c = cleanup"
 	echo "u   = upd, execute steps 3-9                   |  b = backup"
-	echo "ur  = upd, execute steps 5-9                   |"
+	echo "ur  = upd, execute steps 5-9                   |  w = factory wipe"
 	echo
 	echo "======================================================================"
 	echo
@@ -441,6 +453,7 @@ unset CCACHE_DISABLE
 case "$1" in
 	rel)
 		export CCACHE_DISABLE=1
+		stepW_wipe
 		step0_copy_code
 		step1_make_clean
 		step2_make_config
@@ -452,6 +465,7 @@ case "$1" in
 		step9_send_finished_mail
 		;;
 	a)
+		stepW_wipe
 		step0_copy_code
 		step1_make_clean
 		step2_make_config
@@ -514,6 +528,9 @@ case "$1" in
 		;;
 	r)
 		stepR_rewrite_config
+		;;
+	w)
+		stepW_wipe
 		;;
 
 	*)
