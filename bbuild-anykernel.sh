@@ -10,10 +10,10 @@
 # Parameters to be configured manually
 #######################################
 
-BOEFFLA_VERSION="5.3.0.5-F2FS-CM13.0-i9300"
+BOEFFLA_VERSION="5.3.0.7-beta1-F2FS-CM13.0-i9300"
 BOEFFLA_DATE=20170108
 
-TOOLCHAIN="/mnt/mount3/source/linux/toolchain/gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-"
+TOOLCHAIN="/mnt/mount3/source/linux/toolchain/gcc-linaro-6.3.1-2017.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-"
 ARCHITECTURE=arm
 COMPILER_FLAGS_KERNEL="-mtune=cortex-a9 -fno-diagnostics-show-caret"
 COMPILER_FLAGS_MODULE="-mtune=cortex-a9 -fno-diagnostics-show-caret"
