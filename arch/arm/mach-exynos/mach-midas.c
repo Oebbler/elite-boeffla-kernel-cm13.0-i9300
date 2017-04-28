@@ -1514,7 +1514,7 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 #if defined(CONFIG_MACH_GC1)
 	.voltage_max = 4200000,
 #else
-	.voltage_max = 4350000,
+	.voltage_max = 4300000,
 #endif
 	.voltage_min = 3300000,
 
