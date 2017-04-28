@@ -1516,7 +1516,7 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 #else
 	.voltage_max = 4350000,
 #endif
-	.voltage_min = 3400000,
+	.voltage_min = 3300000,
 
 #if defined(CONFIG_MACH_GC1)
 	.in_curr_limit = 700,
@@ -1533,9 +1533,14 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 	.chg_curr_siop_lv2 = 475,
 	.chg_curr_siop_lv3 = 1,	/* zero make charger off */
 #else
+/* default:
 	.in_curr_limit = 1000,
 	.chg_curr_ta = 1000,
-	.chg_curr_dock = 1000,
+	.chg_curr_dock = 1000,*/
+
+	.in_curr_limit = 2100,
+	.chg_curr_ta = 2100,
+	.chg_curr_dock = 2100,
 	.chg_curr_siop_lv1 = 475,
 	.chg_curr_siop_lv2 = 475,
 	.chg_curr_siop_lv3 = 475,
@@ -1561,7 +1566,7 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 	.recharge_voltage = 4150000,
 #else
 	/* it will be cacaluated in probe */
-	.recharge_voltage = 4300000,
+	.recharge_voltage = 4200000,
 #endif
 
 #if defined(CONFIG_TARGET_LOCALE_KOR) || defined(CONFIG_MACH_M0_CTC) || \
